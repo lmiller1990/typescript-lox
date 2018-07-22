@@ -1,0 +1,9 @@
+{
+  "name": "ts-lox",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^10.5.2"
+  }
+}
