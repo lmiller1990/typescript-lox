@@ -45,7 +45,7 @@ class Scanner {
       case "!": this.addToken(this.match("=") ? TokenType.BANG_EQUAL : TokenType.BANG); break
       case "=": this.addToken(this.match("=") ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break
       case "<": this.addToken(this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS); break
-      case ">": this.addToken(this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS); break
+      case ">": this.addToken(this.match("=") ? TokenType.GREATER_EQUAL : TokenType.GREATER); break
       default: Lox.error(this.line, "Unexpected character.")
 
     }
@@ -54,6 +54,14 @@ class Scanner {
   advance(): string {
     this.current += 1
     return this.source[this.current - 1]
+  }
+
+  match(expected: string): boolean {
+    if (this.isAtEnd()) return false
+    if (this.source[this.current] != expected) return false
+
+    this.current += 1
+    return true
   }
 
   addToken(tokenType: TokenType): void

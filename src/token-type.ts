@@ -19,4 +19,4 @@ enum TokenType {
   EOF
 }
 
-export default TokenType
+export { TokenType }

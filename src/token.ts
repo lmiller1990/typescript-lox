@@ -1,4 +1,4 @@
-import TokenType from "./token-type";
+import { TokenType } from "./token-type";
 
 class Token {
   type: TokenType
@@ -18,4 +18,4 @@ class Token {
   }
 }
 
-export {Token}
+export { Token }
