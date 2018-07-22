@@ -3,15 +3,15 @@ import * as readline from "readline"
 import { Token } from "./token"
 import { Scanner } from "./scanner"
 
-export default {
-  hasError: false, 
+class Lox {
+  static hasError: boolean = false
 
-  runFile: (file): Boolean => {
+  static runFile (file): Boolean {
     const content = fs.readFileSync(file, "utf8")
     return this.run(content)
-  },
+  }
 
-  runPrompt: () => {
+  static runPrompt(): void {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -22,9 +22,9 @@ export default {
     rl.on("line", (line) => {
       this.run(line)
     })
-  },
+  }
 
-  run: (source: string): Boolean => {
+  static run(source: string): boolean {
     const scanner = new Scanner(source)
     const tokens: Token[] = scanner.scanTokens()
     
@@ -33,14 +33,16 @@ export default {
     }
 
     return false
-  },
+  }
 
-  error: (line: number, message: string): void => {
+  static error(line: number, message: string): void {
     this.report(line, "", message)
-  },
+  }
 
-  report: (line: number, where: string, message: string): void => {
+  static report(line: number, where: string, message: string): void {
     console.error(`[line ${line}] Error ${where}: ${message}`)
-    this.hadError = true
+    this.hasError = true
   }
 }
+
+export { Lox }

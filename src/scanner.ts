@@ -1,16 +1,21 @@
-import Lox from "./lox"
+import { Lox } from "./lox"
 import { Token } from "./token"
 import { TokenType } from "./token-type"
 
 class Scanner {
   source: string
   tokens: Token[]
-  line: number = 1
-  start: number = 0
-  current: number = 0
+  start: number
+  current: number
+  line: number
+
 
   constructor(source: string) {
     this.source = source
+    this.tokens = new Array<Token>()
+    this.line = 1
+    this.start = 0
+    this.current = 0
   }
 
   scanTokens(): Token[] {
@@ -19,6 +24,7 @@ class Scanner {
       this.scanToken()
     }
 
+    console.log(this.tokens)
     this.tokens.push(new Token(TokenType.EOF, "", null, this.line))
 
     return this.tokens
@@ -55,6 +61,13 @@ class Scanner {
           this.addToken(TokenType.SLASH)
         }
         break
+      case " ":
+      case "\r":
+      case "\t":
+        break
+
+      case "\n":
+        this.line += 1; break
       default: Lox.error(this.line, "Unexpected character.")
 
     }
