@@ -38,20 +38,45 @@ class Scanner {
     const c = this.advance()
     switch (c) {
   
-      case "(": this.addToken(TokenType.LEFT_PAREN, null); break
-      case ")": this.addToken(TokenType.RIGHT_PAREN, null); break
-      case "{": this.addToken(TokenType.LEFT_BRACE, null); break
-      case "}": this.addToken(TokenType.RIGHT_BRACE, null); break
-      case ",": this.addToken(TokenType.COMMA, null); break
-      case ".": this.addToken(TokenType.DOT, null); break
-      case "-": this.addToken(TokenType.MINUS, null); break
-      case "+": this.addToken(TokenType.PLUS, null); break
-      case ";": this.addToken(TokenType.SEMICOLON, null); break
-      case "*": this.addToken(TokenType.STAR, null); break
-      case "!": this.addToken(this.match("=") ? TokenType.BANG_EQUAL : TokenType.BANG); break
-      case "=": this.addToken(this.match("=") ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break
-      case "<": this.addToken(this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS); break
-      case ">": this.addToken(this.match("=") ? TokenType.GREATER_EQUAL : TokenType.GREATER); break
+      case "(": 
+        this.addToken(TokenType.LEFT_PAREN, null) 
+        break
+      case ")": 
+        this.addToken(TokenType.RIGHT_PAREN, null)
+        break
+      case "{": 
+        this.addToken(TokenType.LEFT_BRACE, null)
+        break
+      case "}":  
+        this.addToken(TokenType.RIGHT_BRACE, null)  
+        break
+      case ",": 
+        this.addToken(TokenType.COMMA, null)
+        break
+      case ".":  
+        this.addToken(TokenType.DOT, null)
+        break
+      case "-": 
+        this.addToken(TokenType.MINUS, null)
+        break
+      case "+": 
+        this.addToken(TokenType.PLUS, null)
+        break
+      case ";": 
+        this.addToken(TokenType.SEMICOLON, null)  
+        break
+      case "*": 
+        this.addToken(TokenType.STAR, null) 
+        break
+      case "!": 
+        this.addToken(this.match("=") ? TokenType.BANG_EQUAL : TokenType.BANG, null)
+        break
+      case "=": this.addToken(this.match("=") ? TokenType.EQUAL_EQUAL : TokenType.EQUAL, null) 
+        break
+      case "<": this.addToken(this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS, null) 
+        break
+      case ">": this.addToken(this.match("=") ? TokenType.GREATER_EQUAL : TokenType.GREATER, null) 
+        break
       case "/": 
         if (this.match("/")) {
           while(this.peek() != "\n" && !this.isAtEnd()) {
@@ -65,10 +90,12 @@ class Scanner {
       case "\r":
       case "\t":
         break
-
       case "\n":
         this.line += 1; break
-      default: Lox.error(this.line, "Unexpected character.")
+      case '"': 
+        this.string()
+        break
+      default: Lox.error(this.line, `Unexpected character: ${c}.`)
 
     }
   }
@@ -77,6 +104,26 @@ class Scanner {
     if (this.isAtEnd()) 
       return "\n"
     return this.source[this.current]
+  }
+
+  string(): void {
+    console.log("String")
+    while (this.peek() != '"' && !this.isAtEnd()) {
+      if (this.peek() == "\n") {
+        this.line += 1
+      }
+      this.advance()
+    }
+
+    if (this.isAtEnd()) {
+      Lox.error(this.line, "Unterminated string.")
+      return 
+    }
+
+    this.advance()
+
+    const value = this.source.substring(this.start + 1, this.current - 1)
+    this.addToken(TokenType.STRING, value)
   }
 
   advance(): string {
@@ -93,9 +140,12 @@ class Scanner {
   }
 
   addToken(tokenType: TokenType): void
-  addToken(tokenType: TokenType, literal: object): void
-  addToken(tokenType: TokenType, literal?: object): void {
+  addToken(tokenType: TokenType, literal?: string | object): void  
+  addToken(tokenType: TokenType, literal?: string | object): void {
     if (literal == null) {
+      const text = this.source.substring(this.start, this.current)
+      this.tokens.push(new Token(tokenType, text, literal, this.line))
+    } else {
       const text = this.source.substring(this.start, this.current)
       this.tokens.push(new Token(tokenType, text, literal, this.line))
     }
