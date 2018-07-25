@@ -19,6 +19,7 @@ class Lox {
     })
 
     console.log("> ")
+    
     rl.on("line", (line) => {
       this.run(line)
     })

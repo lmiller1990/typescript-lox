@@ -3,7 +3,7 @@ import { TokenType } from "./token-type";
 class Token {
   type: TokenType
   lexeme: string
-  literal: object | string
+  literal: any
   line: number
 
   constructor(type: TokenType, lexeme: string, literal: object | string, line: number) {
