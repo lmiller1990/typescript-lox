@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "test": "yarn jest",
+    "gen:expr": "tsc src/tool/generate-ast.ts && node src/tool/generate-ast.js src"
+  },
   "devDependencies": {
     "@types/jest": "^23.3.0",
     "@types/node": "^10.5.2",
