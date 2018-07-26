@@ -155,7 +155,7 @@ class Scanner {
     this.addToken(type)
   }
 
-  isAlphaNumeric(c): boolean {
+  isAlphaNumeric(c: string): boolean {
     return this.isAlpha(c) && this.isAlphaNumeric(c)
   }
 

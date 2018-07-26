@@ -36,6 +36,8 @@ class GenerateAst {
     let template = `import { Token } from "./token"\n` +
       `abstract class ${baseName} {\n}\n`
 
+    template = this.defineVisitor(template, baseName, types)
+
     for (let type of types) {
       const className = this.getClassName(type)
       const fields = this.getFields(type)
@@ -65,6 +67,17 @@ class GenerateAst {
     }
 
     return template += "  }\n}\n\n"
+  }
+
+  static defineVisitor(template: string, baseName: string, types: string[]): string {
+    template += "interface Visitor<T> {\n"
+    
+    for (let type of types) {
+      const className = this.getClassName(type)
+      template += `  visit${className}${baseName}(${baseName.toLowerCase()}: ${className}): T\n`
+    }
+
+    return template + "}\n\n"
   }
 }
 

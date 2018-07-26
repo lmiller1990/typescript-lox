@@ -7,7 +7,6 @@ var GenerateAst = /** @class */ (function () {
     }
     GenerateAst.run = function () {
         var args = process.argv.slice(2);
-        console.log(args, args.length);
         if (args.length != 1) {
             console.error("Usage: generate_ast <output directory>");
             return;
@@ -32,6 +31,7 @@ var GenerateAst = /** @class */ (function () {
     GenerateAst.defineAst = function (outputDir, baseName, types) {
         var template = "import { Token } from \"./token\"\n" +
             ("abstract class " + baseName + " {\n}\n");
+        template = this.defineVisitor(template, baseName, types);
         for (var _i = 0, types_1 = types; _i < types_1.length; _i++) {
             var type = types_1[_i];
             var className = this.getClassName(type);
@@ -59,10 +59,18 @@ var GenerateAst = /** @class */ (function () {
         }
         return template += "  }\n}\n\n";
     };
+    GenerateAst.defineVisitor = function (template, baseName, types) {
+        template += "interface Visitor<T> {\n";
+        for (var _i = 0, types_2 = types; _i < types_2.length; _i++) {
+            var type = types_2[_i];
+            var className = this.getClassName(type);
+            template += "  visit" + className + baseName + "(" + baseName.toLowerCase() + ": " + className + "): T\n";
+        }
+        return template + "}\n\n";
+    };
     return GenerateAst;
 }());
 exports.GenerateAst = GenerateAst;
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV != 'test') {
     GenerateAst.run();
 }
