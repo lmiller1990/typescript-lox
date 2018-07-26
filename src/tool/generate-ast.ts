@@ -34,7 +34,9 @@ class GenerateAst {
 
   static defineAst(outputDir: string, baseName: string, types: string[]): void {
     let template = `import { Token } from "./token"\n` +
-      `abstract class ${baseName} {\n}\n`
+      `abstract class ${baseName} {\n` +
+      "  abstract accept<T>(visitor: Visitor<T>): T" +
+      "\n}\n\n"
 
     template = this.defineVisitor(template, baseName, types)
 
@@ -66,7 +68,13 @@ class GenerateAst {
       template += `    this.${name} = ${name}\n`
     }
 
-    return template += "  }\n}\n\n"
+    template += "  }\n\n"
+
+    template += "  accept<T>(vistor: Visitor<T>) {\n"
+    template += `    return visitor.visit${className}${baseName}(this)\n`
+    template += "  }"  
+    
+    return template += "\n}\n\n"
   }
 
   static defineVisitor(template: string, baseName: string, types: string[]): string {

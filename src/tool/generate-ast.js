@@ -30,7 +30,9 @@ var GenerateAst = /** @class */ (function () {
     };
     GenerateAst.defineAst = function (outputDir, baseName, types) {
         var template = "import { Token } from \"./token\"\n" +
-            ("abstract class " + baseName + " {\n}\n");
+            ("abstract class " + baseName + " {\n") +
+            "  abstract accept<T>(visitor: Visitor<T>): T" +
+            "\n}\n\n";
         template = this.defineVisitor(template, baseName, types);
         for (var _i = 0, types_1 = types; _i < types_1.length; _i++) {
             var type = types_1[_i];
@@ -57,7 +59,11 @@ var GenerateAst = /** @class */ (function () {
             name_1 = name_1.substring(0, name_1.length - 1);
             template += "    this." + name_1 + " = " + name_1 + "\n";
         }
-        return template += "  }\n}\n\n";
+        template += "  }\n\n";
+        template += "  accept<T>(vistor: Visitor<T>) {\n";
+        template += "    return visitor.visit" + className + baseName + "(this)\n";
+        template += "  }";
+        return template += "\n}\n\n";
     };
     GenerateAst.defineVisitor = function (template, baseName, types) {
         template += "interface Visitor<T> {\n";

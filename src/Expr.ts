@@ -1,6 +1,8 @@
 import { Token } from "./token"
 abstract class Expr {
+  abstract accept<T>(visitor: Visitor<T>): T
 }
+
 interface Visitor<T> {
   visitBinaryExpr(expr: Binary): T
   visitGroupingExpr(expr: Grouping): T
@@ -19,6 +21,10 @@ class Binary extends Expr {
     this.operator = operator
     this.right = right
   }
+
+  accept<T>(vistor: Visitor<T>) {
+    return visitor.visitBinaryExpr(this)
+  }
 }
 
 class Grouping extends Expr {
@@ -28,6 +34,10 @@ class Grouping extends Expr {
     super()
     this.expression = expression
   }
+
+  accept<T>(vistor: Visitor<T>) {
+    return visitor.visitGroupingExpr(this)
+  }
 }
 
 class Literal extends Expr {
@@ -36,6 +46,10 @@ class Literal extends Expr {
   constructor(value: any) {
     super()
     this.value = value
+  }
+
+  accept<T>(vistor: Visitor<T>) {
+    return visitor.visitLiteralExpr(this)
   }
 }
 
@@ -47,6 +61,10 @@ class Unary extends Expr {
     super()
     this.operator = operator
     this.right = right
+  }
+
+  accept<T>(vistor: Visitor<T>) {
+    return visitor.visitUnaryExpr(this)
   }
 }
 
