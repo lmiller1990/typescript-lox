@@ -34,7 +34,7 @@ class GenerateAst {
 
   static defineAst(outputDir: string, baseName: string, types: string[]): void {
     let template = `import { Token } from "./token"\n` +
-      `abstract class ${baseName} {\n` +
+      `export abstract class ${baseName} {\n` +
       "  abstract accept<T>(visitor: Visitor<T>): T" +
       "\n}\n\n"
 
@@ -56,7 +56,7 @@ class GenerateAst {
   static defineType(template: string, baseName: string, className: string, fields: string): string {
     const fieldDeclarations = fields.split(", ").join("\n  ")
 
-    template += `class ${className} extends ${baseName} {\n` +
+    template += `export class ${className} extends ${baseName} {\n` +
         `  ${fieldDeclarations}\n\n` +
         `  constructor(${fields}) {\n` +
         `    super()\n`
@@ -70,7 +70,7 @@ class GenerateAst {
 
     template += "  }\n\n"
 
-    template += "  accept<T>(vistor: Visitor<T>) {\n"
+    template += "  accept<T>(visitor: Visitor<T>) {\n"
     template += `    return visitor.visit${className}${baseName}(this)\n`
     template += "  }"  
     
@@ -78,7 +78,7 @@ class GenerateAst {
   }
 
   static defineVisitor(template: string, baseName: string, types: string[]): string {
-    template += "interface Visitor<T> {\n"
+    template += "export interface Visitor<T> {\n"
     
     for (let type of types) {
       const className = this.getClassName(type)
